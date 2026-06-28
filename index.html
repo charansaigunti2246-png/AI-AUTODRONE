@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Drone Navigation System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <h1>AI Drone Navigation System</h1>
+            <div class="header-controls">
+                <div class="status-indicator" id="connectionStatus">
+                    <span class="status status--success">CONNECTED</span>
+                </div>
+                <button class="btn btn--primary" id="toggleMode">AI MODE</button>
+                <button class="btn btn--outline" id="emergencyLand">EMERGENCY LAND</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- 3D Viewport -->
+            <div class="viewport-container">
+                <canvas id="droneCanvas"></canvas>
+                
+                <!-- Overlay Controls -->
+                <div class="viewport-overlay">
+                    <div class="camera-controls">
+                        <button class="btn btn--sm btn--outline" id="cameraFirst">1st Person</button>
+                        <button class="btn btn--sm btn--outline" id="cameraThird">3rd Person</button>
+                        <button class="btn btn--sm btn--outline active" id="cameraOverhead">Overhead</button>
+                    </div>
+                    
+                    <div class="flight-hud">
+                        <div class="hud-item">
+                            <label>Altitude</label>
+                            <span id="altitude">10.5m</span>
+                        </div>
+                        <div class="hud-item">
+                            <label>Speed</label>
+                            <span id="speed">0.0 m/s</span>
+                        </div>
+                        <div class="hud-item">
+                            <label>Battery</label>
+                            <span id="battery">100%</span>
+                        </div>
+                        <div class="hud-item">
+                            <label>Mode</label>
+                            <span id="currentMode">MANUAL</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading Screen -->
+                <div class="loading-screen" id="loadingScreen">
+                    <div class="loading-content">
+                        <div class="loading-spinner"></div>
+                        <p>Initializing AI Drone System...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Side Panel -->
+            <div class="side-panel">
+                <!-- AI Status Panel -->
+                <div class="panel-section">
+                    <h3>AI Decision Engine</h3>
+                    <div class="ai-status">
+                        <div class="status-item">
+                            <label>Pathfinding</label>
+                            <span class="status status--info" id="pathfindingStatus">IDLE</span>
+                        </div>
+                        <div class="status-item">
+                            <label>Obstacle Detection</label>
+                            <span class="status status--success" id="obstacleStatus">CLEAR</span>
+                        </div>
+                        <div class="status-item">
+                            <label>Navigation</label>
+                            <span class="status status--success" id="navigationStatus">READY</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Flight Parameters -->
+                <div class="panel-section">
+                    <h3>Flight Parameters</h3>
+                    <div class="parameter-controls">
+                        <div class="form-group">
+                            <label class="form-label">Max Speed (m/s)</label>
+                            <input type="range" class="form-control" id="maxSpeed" min="1" max="20" value="15">
+                            <span class="range-value">15</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Safety Radius (m)</label>
+                            <input type="range" class="form-control" id="safetyRadius" min="2" max="10" value="5">
+                            <span class="range-value">5</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">AI Aggressiveness</label>
+                            <input type="range" class="form-control" id="aggressiveness" min="1" max="10" value="5">
+                            <span class="range-value">5</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sensors Data -->
+                <div class="panel-section">
+                    <h3>Sensor Data</h3>
+                    <div class="sensor-grid">
+                        <div class="sensor-item">
+                            <label>LiDAR</label>
+                            <div class="sensor-value" id="lidarData">ACTIVE</div>
+                        </div>
+                        <div class="sensor-item">
+                            <label>Camera</label>
+                            <div class="sensor-value" id="cameraData">HD 1080p</div>
+                        </div>
+                        <div class="sensor-item">
+                            <label>IMU</label>
+                            <div class="sensor-value" id="imuData">STABLE</div>
+                        </div>
+                        <div class="sensor-item">
+                            <label>GPS</label>
+                            <div class="sensor-value" id="gpsData">LOCKED</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="panel-section">
+                    <h3>Actions</h3>
+                    <div class="action-buttons">
+                        <button class="btn btn--secondary btn--full-width" id="clearPath">Clear Path</button>
+                        <button class="btn btn--secondary btn--full-width" id="clearObstacles">Clear Obstacles</button>
+                        <button class="btn btn--secondary btn--full-width" id="resetDrone">Reset Position</button>
+                        <button class="btn btn--secondary btn--full-width" id="downloadLog">Download Log</button>
+                    </div>
+                </div>
+
+                <!-- Performance Metrics -->
+                <div class="panel-section">
+                    <h3>Performance</h3>
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <label>FPS</label>
+                            <span id="fpsCounter">60</span>
+                        </div>
+                        <div class="metric-item">
+                            <label>CPU Usage</label>
+                            <span id="cpuUsage">45%</span>
+                        </div>
+                        <div class="metric-item">
+                            <label>Decisions/sec</label>
+                            <span id="decisionRate">30</span>
+                        </div>
+                        <div class="metric-item">
+                            <label>Path Length</label>
+                            <span id="pathLength">0m</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls Info -->
+        <div class="controls-info" id="controlsInfo">
+            <h4>Controls</h4>
+            <div class="controls-grid">
+                <div class="control-section">
+                    <h5>Manual Mode</h5>
+                    <div class="control-item">W/A/S/D - Movement</div>
+                    <div class="control-item">Space/Shift - Up/Down</div>
+                    <div class="control-item">Mouse - Camera</div>
+                </div>
+                <div class="control-section">
+                    <h5>AI Mode</h5>
+                    <div class="control-item">Click - Set Waypoint</div>
+                    <div class="control-item">Ctrl+Click - Place Obstacle</div>
+                    <div class="control-item">M - Toggle Mode</div>
+                    <div class="control-item">E - Emergency Land</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
